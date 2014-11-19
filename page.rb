@@ -1,7 +1,20 @@
 class Page
 
-	def parse_raw
-		#onclick appears for each record only
+	def parse_raw_html(split_token, record_splitters)
+
+		segments = @raw_html.split(split_token)
+		
+		finalrecords = []
+		#segments[1...segments.length].each do |s|	#segments[0] can be discarded
+		segments[1...5].each do |s|	#segments[0] can be discarded
+			puts s
+			print "\n" * 5
+			#finalrecords.push(segments[s].split("'").first)
+		end
+	end
+	
+	def save_page
+	
 	end
 	
 	def initialize

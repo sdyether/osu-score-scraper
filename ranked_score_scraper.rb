@@ -20,7 +20,12 @@ class RankedScoreScraper
 		end
 		
 		puts @num_pages.to_s + " pages successfully scraped."
-		puts @pages[0].raw_html
+		#puts @pages[0].raw_html
+		
+		#change this to parse each grab
+		@pages.each do |page|
+			page.parse_raw_html(@page_split_token, @record_split_tokens)
+		end
 		
 	end
 	
@@ -65,6 +70,10 @@ class RankedScoreScraper
 		@intial_backoff_wait = 30
 		@max_page_attempts = 4
 		@records_per_page = 50
+		@page_split_token = "onclick='document.location=\"/u/"
+		
+		@record_split_tokens = [ "\"'><td><b>#", "</b></td><td><img class='flag' src=\"//s.ppy.sh/images/flags/", ".gif\" title=\"\"/> <a href='/u/", "'>", "</a></td><td>", "%</td><td><span>", "</span></td><td><span>", " (", ")</span></td><td><span style='font-weight:bold'>", "</span></td><td align='center'>", "</td><td align='center'>", "</td><td align='center'>" ]
+		#[ user id, rank, country code, user id, username, accuracy, play count, total score, level, ranked score, SS count, S count, A count ]
 		
 		@pages = Array.new(@num_pages)
 	end
@@ -77,13 +86,15 @@ class RankedScoreScraper
 		@intial_backoff_wait
 		@max_page_attempts
 		@records_per_page
+		@page_split_token
+		@record_split_tokens
 		
 		#let's keep all pages in memory so we can rollback easier on failed scrape
 		@pages
 	end
 	
 	#getters and setters 
-	attr_accessor :num_pages, :max_requests_per_min, :base_url, :finished, :intial_backoff_wait, :max_page_attempts, :records_per_page, :pages
+	attr_accessor :num_pages, :max_requests_per_min, :base_url, :finished, :intial_backoff_wait, :max_page_attempts, :records_per_page, :pages, :page_split_token, :record_split_tokens
 	
 end
 
