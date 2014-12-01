@@ -19,7 +19,7 @@ class Page
 				s = splat[1]
 			end
 
-			record_values.uniq! #remove dups
+			record_values.delete_at(3) #remove a dup
 			final_records.push(record_values)
 		end
 
@@ -30,10 +30,8 @@ class Page
 
 		#p data.map{ |row| row[2] }
 		
-		if not ( self.class.valid_page?( data ))
-			raise RuntimeError.new "Error in page format. Exiting."
-		end
-
+		self.class.valid_page?( data )
+	
 		data = self.class.validate( data )
 		
 		@page_data = data
@@ -41,21 +39,21 @@ class Page
 	end
 	
 	def self.valid_page?( page )
-		
+
 		if page.length != RECORDS
-			return false
+			raise RuntimeError.new "Error in page format: Not enough records. Exiting."
 		end
-			
-		if page[0].length != FIELDS
-			return false
-		end
-			
-		true
 		
+		page.each do |p|
+			if p.length != FIELDS
+				raise RuntimeError.new "Error in page format at record: " + p[3] + ". Exiting."
+			end
+		end
+
 	end
 	
 	def self.validate( page )
-	
+
 		page.each do |r|
 			#delete commas from number fields they appear in
 			[5, 6, 8, 9, 10, 11].each do |f|

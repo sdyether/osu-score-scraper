@@ -1,6 +1,7 @@
 require 'net/http'
 require_relative 'page'
 require_relative 'page_window'
+require_relative 'data_manager'
 
 class RankedScoreScraper
 
@@ -9,7 +10,7 @@ class RankedScoreScraper
 	
 		pages_done = 0
 		while pages_done < @num_pages
-		
+
 			@window.curr = get_and_parse(pages_done + 1)
 			
 			if pages_done == 0
@@ -31,7 +32,7 @@ class RankedScoreScraper
 					break if PageWindow.valid_page_window?( @window.prev_new, @window.curr_new )
 				end
 				
-				@window.fix_everything #magic
+				@window.fix_everything #corner case
 				
 			end
 			
@@ -44,7 +45,8 @@ class RankedScoreScraper
 		
 		#success
 		puts "Finished."
-
+		return DataManager.flatten_pages( @pages )
+		
 	end
 	
 	def get_and_parse(num) #1-indexed
@@ -82,7 +84,7 @@ class RankedScoreScraper
 		while (attempt_number <= max_attempts)
 		
 			#try to get a page
-			puts "Grabbing page " + url + "..."
+			puts "Grabbing page: " + url + "..."
 			
 			url = URI.parse(url)
 			req = Net::HTTP::Get.new(url.to_s)
@@ -104,20 +106,19 @@ class RankedScoreScraper
 		return nil #failed
 	end
 	
-	def initialize
-	#TODO get these from config file instead
+	def initialize( config )
 	
-		@num_pages = 2 #how many pages to scrape
-		@max_requests_per_min = 15 #be kind to server
-		@base_url = "http://osu.ppy.sh/p/playerranking/?m=0&s=3&o=1&page="
-		@intial_backoff_wait = 30
-		@max_page_attempts = 4
-		@records_per_page = 50
+	#TODO https://github.com/hexorx/countries
+	
+		@num_pages = config.num_pages
+		@max_requests_per_min = config.max_requests_per_min
+		@intial_backoff_wait = config.intial_backoff_wait
+		@max_page_attempts = config.max_page_attempts
+		@records_per_page = config.records_per_page
 		
-		@page_split_token = "onclick='document.location=\"/u/"
-		
-		@record_split_tokens = [ "\"'><td><b>#", "</b></td><td><img class='flag' src=\"//s.ppy.sh/images/flags/", ".gif\" title=\"\"/> <a href='/u/", "'>", "</a></td><td>", "%</td><td><span>", "</span></td><td><span>", " (", ")</span></td><td><span style='font-weight:bold'>", "</span></td><td align='center'>", "</td><td align='center'>", "</td><td align='center'>", "</td></tr>" ]
-		#[ user id, rank, country code, user id, username, accuracy, play count, total score, level, ranked score, SS count, S count, A count ]
+		@base_url = config.base_url
+		@page_split_token = config.page_split_token
+		@record_split_tokens = config.record_split_tokens
 		
 		@window = PageWindow.new
 		@window.window_size = 2
@@ -131,7 +132,8 @@ class RankedScoreScraper
 	end
 	
 	#getters and setters 
-	attr_accessor :num_pages, :max_requests_per_min, :base_url, :intial_backoff_wait, :max_page_attempts, :records_per_page, :pages, :page_split_token, :record_split_tokens
+	attr_accessor :num_pages, :max_requests_per_min, :base_url, :intial_backoff_wait, \
+	:max_page_attempts, :records_per_page, :pages, :page_split_token, :record_split_tokens
 
 end
 

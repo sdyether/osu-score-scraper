@@ -24,7 +24,8 @@ class PageWindow
 	end
 	
 	def fix_everything
-	
+	#TODO
+		raise RuntimeError.new "Haven't done this yet."
 	end
 
 	def initialize
