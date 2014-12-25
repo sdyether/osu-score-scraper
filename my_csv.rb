@@ -1,7 +1,7 @@
 require 'csv'
 
 class MyCSV
-	def to_csv( data, base_dir = File.join(".", "data"), fname = generate_fname )
+	def self.to_csv( data, base_dir = File.join(".", "data"), fname = generate_fname )
 		uri = File.join(base_dir, fname)
 		
 		CSV.open(uri, "w") do |csv|
@@ -13,11 +13,31 @@ class MyCSV
 		puts "Output written to: " + uri
 	end
 	
-	def read_csv( base_dir = File.join(".", "data"), fname)
-	
+	def self.read_csv( base_dir = File.join(".", "data"), fname)
+		uri = File.join(base_dir, fname)
+		
+		data = []
+		CSV.foreach(uri) do |line|
+			data << line
+		end
+		
+		data
 	end
 	
-	def generate_fname()
+	#return filename of most recent data set
+	def self.get_latest( base_dir = File.join(".", "data") )
+	
+		if !File.directory?(base_dir)
+			puts "No data yet, try running the scraper with 'ruby main.rb'"
+			return nil
+		end
+		
+		file = Dir.glob(File.join(base_dir, "*")).max_by {|f| File.mtime(f)}
+		return File.basename(file)
+		
+	end
+	
+	def self.generate_fname()
 		t = Time.now
 		
 		name = [ "scoredata", 
