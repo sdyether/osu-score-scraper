@@ -19,5 +19,4 @@ unless File.directory?(data_dir)
 	FileUtils.mkdir_p(data_dir)
 end
 
-csv = MyCSV.new
-csv.to_csv( data, data_dir )
+MyCSV.to_csv( data, data_dir )
