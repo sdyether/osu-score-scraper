@@ -46,8 +46,8 @@ args.each do |a|
 	end
 end
 
-limit ||= 1000
-sort ||= "rankedscore"
+limit ||= 50
+sort ||= "rankedScore"
 
 #arguments done, get our data:
 data = MyCSV.read_csv( MyCSV.get_latest )
