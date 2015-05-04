@@ -18,9 +18,13 @@ args = ARGV.each_slice(2).to_a
 
 keys = %w(id rank country username accuracy playCount totalScore level rankedScore ssCount sCount aCount)
 #[ user id, rank, country code, user id, username, accuracy, play count, total score, level, ranked score, SS count, S count, A count ]
+
 conditions = []
-limit = nil
+limit = nil #for printing less results
 sort = nil
+minimal = nil 
+#for printing only relevant fields in each row
+#dodgy addition that might break things if you are sorting by more than one cond
 
 args.each do |a|
 	if !a[1]
@@ -34,6 +38,8 @@ args.each do |a|
 		limit = a[1].to_i
 	when "--sort"
 		sort = a[1]
+	when "--minimal"
+		minimal = true
 	else
 		if !keys.include?( a[0][2..-1] )
 			puts "Error: unsupported argument: " + a[0][2..-1]
@@ -48,6 +54,7 @@ end
 
 limit ||= 50
 sort ||= "rankedScore"
+minimal ||= false
 
 #arguments done, get our data:
 data = MyCSV.read_csv( MyCSV.get_latest )
@@ -78,5 +85,15 @@ data.sort_by! {|k| -k[keys.index( sort )] }
 data = data[0...limit]
 
 #print final data
-puts
-data.each {|d| p d } #TODO make this prettier
+case minimal
+when false
+	puts
+	data.each {|d| p d } #TODO make this prettier
+when true
+	puts
+	data.each do |d|
+		puts d[3] + " \t" + d[keys.index( sort )].to_s
+	end
+else
+	puts "Something went wrong"
+end
