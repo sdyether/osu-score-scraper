@@ -9,5 +9,4 @@ Requires Ruby 1.9+
 
 ### Todo:
 * Make use of CSV snapshots to graph changes in stats for users
-* Prettier printing in console
 * General refactoring
