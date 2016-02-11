@@ -4,7 +4,7 @@ require 'fileutils'
 require_relative 'my_csv'
 
 def print_help
-	puts "\nOptional flags:\n\t'--sort': primary sorting field, should be a searchable flag name from below.  Defaults to 'rankedScore'.\n\t'--limit': Optional limit on amount of results returned.  Defaults to infinity.\n\nSearchable flags:\n\t'id'\n\t'rank'\n\t'country'\n\t'username'\n\t'accuracy'\n\t'playCount'\n\t'totalScore'\n\t'level'\n\t'rankedScore'\n\t'ssCount'\n\t'sCount'\n\t'aCount'\n\nExamples:\n\t'ruby query.rb --sort accuracy --country au --limit 10'  #get top 10 australian players sorted by accuracy\n\t'ruby query.rb --sort totalScore --level 103'  #get all level 103 players sorted by total score\n\nThere is also a minimal flag now that prints only the relevant sort criteria.  Expect it to break though.\n\tEg: 'ruby query.rb --sort ssCount --limit 20 --minimal true   #find the perfectionists"
+	puts "\nOptional flags:\n\t'--sort': primary sorting field, should be a searchable flag name from below.  Defaults to 'rankedScore'.\n\t'--limit': Optional limit on amount of results returned.  Defaults to 50.\n\nSearchable flags:\n\t'id'\n\t'rank'\n\t'country'\n\t'username'\n\t'accuracy'\n\t'playCount'\n\t'totalScore'\n\t'level'\n\t'rankedScore'\n\t'ssCount'\n\t'sCount'\n\t'aCount'\n\nExamples:\n\t'ruby query.rb --sort accuracy --country au --limit 10'  #get top 10 australian players sorted by accuracy\n\t'ruby query.rb --sort totalScore --level 103'  #get all level 103 players sorted by total score\n\nThere is also a minimal flag now that prints only the relevant sort criteria.  Expect it to break though.\n\tEg: 'ruby query.rb --sort ssCount --limit 20 --minimal true   #find the perfectionists"
 end
 
 def print_header
